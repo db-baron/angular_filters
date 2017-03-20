@@ -1,0 +1,102 @@
+<!--  Create an input search for different colors. Make a searchable table showing the colors-->
+<html ng-app='myApp'>
+<head>
+  <meta charset="UTF-8">
+  <title>Color Filter with ng-filter</title>
+  <script src='bower_components/angular/angular.js'></script>
+  <script type='text/javascript'>
+    var myApp = angular.module('myApp', []);
+    // Build a custom filter so the user can select colors by the color's blue hex value
+    myApp.filter('blue', function(){
+        return function(input, color){
+            var filtered = [];
+            var colorMatch = new RegExp(color, "i");
+            for (var i =0; i<input.length; i++){
+                if(colorMatch.test(input[i].hex.substring(5))){
+                    filtered.push(input[i]);
+                }
+            }
+        return filtered;
+        }
+    });
+    myApp.controller('colorsController', ['$scope', function($scope){
+      // we don't need a factory for this demo, it wouldn't make a difference if we did.
+        $scope.friends = [
+            {name:'John', age: 25.9, gender:'boy'},
+            {name:'Jessie', age: 30.8, gender:'girl'},
+        ];
+        $scope.color_list = [
+                {
+                    "hex": "#EFDECD",
+                    "name": "Almond",
+                    "rgb": "(239, 222, 205)"
+                },
+                {
+                    "hex": "#CD9575",
+                    "name": "Antique Brass",
+                    "rgb": "(205, 149, 117)"
+                },
+                {
+                    "hex": "#FDD9B5",
+                    "name": "Apricot",
+                    "rgb": "(253, 217, 181)"
+                },
+                {
+                    "hex": "#78DBE2",
+                    "name": "Aquamarine",
+                    "rgb": "(120, 219, 226)"
+                },
+                {
+                    "hex": "#87A96B",
+                    "name": "Asparagus",
+                    "rgb": "(135, 169, 107)"
+                }, {
+                    "hex": "#FC6C85",
+                    "name": "Wild Watermelon",
+                    "rgb": "(252, 108, 133)"
+                }, {
+                    "hex": "#CDA4DE",
+                    "name": "Wisteria",
+                    "rgb": "(205, 164, 222)"
+                }, {
+                    "hex": "#FCE883",
+                    "name": "Yellow",
+                    "rgb": "(252, 232, 131)"
+                }, {
+                    "hex": "#C5E384",
+                    "name": "Yellow Green",
+                    "rgb": "(197, 227, 132)"
+                }, {
+                    "hex": "#FFAE42",
+                    "name": "Yellow Orange",
+                    "rgb": "(255, 174, 66)"
+                }
+        ];
+    }]);
+  </script>
+</head>
+<body>
+  <div ng-controller="colorsController">
+      Enter Color Name: <input ng-model="color_filter">
+      Enter Blue Hex: <input ng-model="blue_filter">
+      <table>
+          <thead>
+              <tr>
+                  <th>Color Name</th>
+                  <th>HEX</th>
+                  <th>RGB</th>
+                  <th>Actual Color</th>
+              </tr>
+          </thead>
+          <tbody ng-repeat="color in color_list | filter: color_filter | blue: blue_filter">
+              <tr>
+                  <td>{{color.name}}</td>
+                  <td>{{color.hex}}</td>
+                  <td>{{color.rgb}}</td>
+                  <td style="background-color:{{color.hex}}"></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+</body>
+</html>
